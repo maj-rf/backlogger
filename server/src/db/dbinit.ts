@@ -2,25 +2,30 @@
 import { Client } from 'pg';
 
 const SQL = `
--- Create an ENUM type for the status column in the Games table
+-- 1. Create an ENUM type for game_status
 CREATE TYPE game_status AS ENUM ('playing', 'backlog', 'finished');
 
--- Create the Genres table
-CREATE TABLE IF NOT EXISTS genre  (
+-- 2. Create the genre table
+CREATE TABLE IF NOT EXISTS genre (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) UNIQUE NOT NULL
 );
 
--- Create the Games table
+-- 3. Create the games table
 CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     title VARCHAR(255) NOT NULL,
-    genre_id INT REFERENCES genre(id) ON DELETE SET NULL,  -- Foreign key to Genres table
-    status game_status  -- Restrict status to 'playing', 'backlog', or 'finished'
+    status game_status NOT NULL
 );
 
-INSERT INTO genre (name) VALUES ('Action'), ('Adventure'), ('RPG'), ('Strategy'), ('Visual Novel');
-`;
+-- 4. Create a join table for the many-to-many relationship between games and genre
+CREATE TABLE IF NOT EXISTS game_genre (
+    game_id INT REFERENCES games(id) ON DELETE CASCADE,
+    genre_id INT REFERENCES genre(id) ON DELETE CASCADE,
+    PRIMARY KEY (game_id, genre_id)
+);
+
+INSERT INTO genre (name) VALUES ('Action'), ('Adventure'), ('RPG'), ('Strategy'), ('Visual Novel'), ('Sports'), ('Fighting'), ('Platformer'), ('FPS'), ('Puzzle');`;
 
 async function main() {
   console.log('seeding...');
