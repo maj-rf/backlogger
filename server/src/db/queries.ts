@@ -1,4 +1,4 @@
-import { QueryResult } from 'pg';
+import { QueryResult, DatabaseError } from 'pg';
 import { pool } from './pool';
 
 type Genre = {
@@ -51,7 +51,7 @@ export async function insertGameToDB(game: GameWithoutID) {
       const selectGenreText = `SELECT id FROM genre WHERE name = $1`;
       const genreResult: QueryResult<Genre> = await client.query(selectGenreText, [genre]);
       if (genreResult.rows.length === 0) {
-        throw new Error(`Genre ${genre} not found`);
+        throw new DatabaseError(`Genre ${genre} is invalid`, 1, 'emptyQuery');
       }
       const genreId = genreResult.rows[0]?.id; // Get the genre's ID
 
@@ -67,8 +67,44 @@ export async function insertGameToDB(game: GameWithoutID) {
     return gameResult.rows[0];
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error('Error inserting game:', err);
+    if (err instanceof DatabaseError) {
+      return err;
+    }
   } finally {
     client.release();
+  }
+}
+
+export async function deleteGameFromDB(id: string) {
+  try {
+    const selectedGameText = `DELETE FROM games WHERE id=$1 RETURNING *`;
+    const result: QueryResult<Game> = await pool.query(selectedGameText, [id]);
+    if (result.rows.length === 0) {
+      throw new DatabaseError('Game not found', 1, 'noData');
+    }
+    return result.rows[0];
+  } catch (err) {
+    if (err instanceof DatabaseError) {
+      return err;
+    }
+  }
+}
+
+export async function updateGameFromDB({ id, status }: { id: string; status: GameStatus }) {
+  try {
+    const selectedGameText = `
+    UPDATE games
+    SET status=$1 
+    WHERE id=$2 
+    RETURNING *`;
+
+    const result: QueryResult<Game> = await pool.query(selectedGameText, [status, id]);
+    if (result.rows.length === 0) {
+      throw new DatabaseError('Game not found', 1, 'noData');
+    }
+  } catch (error) {
+    if (error instanceof DatabaseError) {
+      return error;
+    }
   }
 }
