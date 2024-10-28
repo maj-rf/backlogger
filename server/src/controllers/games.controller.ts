@@ -11,7 +11,7 @@ import { DatabaseError } from 'pg';
 
 export async function getAllGames(_req: Request, res: Response) {
   const games = await getAllGamesFromDB();
-  res.send('Games:' + games.map((game) => game.genre.map((genre) => genre)));
+  res.json(games);
 }
 
 export async function addGame(req: Request, res: Response) {
