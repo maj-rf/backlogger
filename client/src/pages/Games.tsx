@@ -1,12 +1,9 @@
-import * as games from '../services/games';
-import { useQuery } from '@tanstack/react-query';
 import { Loading } from '@/components/Loading';
+import { useGames } from '@/hooks/useGames';
+import { Link } from 'react-router-dom';
 
 export function Games() {
-  const { data, isPending, isError, error } = useQuery({
-    queryFn: games.getAllGames,
-    queryKey: ['games'],
-  });
+  const { data, isPending, isError, error } = useGames();
   if (isPending) return <Loading />;
   if (isError) {
     return <span>Error: {error.message}</span>;
@@ -17,8 +14,10 @@ export function Games() {
       <ul>
         {data?.map((game) => (
           <li key={'game' + game.id}>
-            <p>{game.title}</p>
-            <p>{game.game_status}</p>
+            <Link to={`/games/${game.id}`}>
+              <p>{game.title}</p>
+            </Link>
+            <p>{game.status}</p>
           </li>
         ))}
       </ul>

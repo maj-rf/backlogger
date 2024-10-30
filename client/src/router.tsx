@@ -3,6 +3,7 @@ import { RootLayout } from './components/RootLayout';
 import ErrorPage from './pages/ErrorPage';
 import { Games } from './pages/Games';
 import Genre from './pages/Genre';
+import { GameDetail } from './pages/GameDetail';
 
 export const routes: RouteObject[] = [
   {
@@ -17,6 +18,10 @@ export const routes: RouteObject[] = [
       {
         path: '/genre',
         element: <Genre />,
+      },
+      {
+        path: '/games/:id',
+        element: <GameDetail />,
       },
     ],
   },
