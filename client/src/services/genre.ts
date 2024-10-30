@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_WEBSITE_URL || '/api/v1';
+export const BASE_URL = import.meta.env.VITE_WEBSITE_URL || '/api/v1';
 
 export type Genre = {
   id: string;
