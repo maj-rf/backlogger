@@ -3,6 +3,7 @@ import {
   deleteGameFromDB,
   GameWithoutID,
   getAllGamesFromDB,
+  getGameFromDB,
   insertGameToDB,
   updateGameFromDB,
 } from '../db/queries';
@@ -14,12 +15,21 @@ export async function getAllGames(_req: Request, res: Response) {
   res.json(games);
 }
 
+export async function getGame(req: Request, res: Response) {
+  const { id } = req.params;
+  if (!id) {
+    throw createHttpError(400, 'Invalid request params');
+  }
+  const game = await getGameFromDB(id);
+  res.json(game);
+}
+
 export async function addGame(req: Request, res: Response) {
-  const { title, game_status, genre }: GameWithoutID = req.body;
-  if (!title || !game_status || genre.length === 0) {
+  const { title, status, genre }: GameWithoutID = req.body;
+  if (!title || !status || genre.length === 0) {
     throw createHttpError(422, 'Invalid/Missing title, game_status, or genre');
   }
-  const result = await insertGameToDB({ title, game_status, genre });
+  const result = await insertGameToDB({ title, status, genre });
   if (result instanceof DatabaseError) {
     throw result;
   }
