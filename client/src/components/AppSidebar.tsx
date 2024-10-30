@@ -8,44 +8,26 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { useQuery } from '@tanstack/react-query';
-import * as genre from '../services/genre';
-import { Loading } from './Loading';
+import { NavLink } from 'react-router-dom';
 
 export function AppSidebar() {
-  const { data, isPending, isError, error } = useQuery({
-    queryFn: genre.getAll,
-    queryKey: ['genre'],
-  });
-
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
-
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Genre</SidebarGroupLabel>
-          {isPending ? (
-            <div className="flex items-center justify-center">
-              <Loading />
-            </div>
-          ) : (
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {data?.map((g) => (
-                  <SidebarMenuItem key={g.name + g.id}>
-                    <SidebarMenuButton asChild>
-                      <a href={g.name}>
-                        <span>{g.name}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          )}
+          <SidebarGroupLabel>Backlogger</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/">Games</NavLink>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/genre">Genre</NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

@@ -6,14 +6,11 @@ export function RootLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-
-      <div className="container">
+      <div className="w-full bg-red-200">
         <SidebarTrigger />
         <main>
-          <h1>Main</h1>
+          <Outlet />
         </main>
-
-        <Outlet />
       </div>
     </SidebarProvider>
   );
