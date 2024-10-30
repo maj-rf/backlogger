@@ -6,7 +6,7 @@ export type Game = {
   id: number;
   title: string;
   genre: string[];
-  game_status: GameStatus;
+  status: GameStatus;
 };
 
 export type GameWithoutID = Omit<Game, 'id'>;
@@ -14,6 +14,16 @@ export type GameWithoutID = Omit<Game, 'id'>;
 export async function getAllGames(): Promise<Game[] | undefined> {
   try {
     const res = await fetch(`${BASE_URL}/games`, { mode: 'cors' });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getGame(id: string): Promise<Game | undefined> {
+  try {
+    const res = await fetch(`${BASE_URL}/games/${id}`, { mode: 'cors' });
     const data = await res.json();
     return data;
   } catch (error) {
