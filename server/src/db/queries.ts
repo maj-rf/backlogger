@@ -22,6 +22,16 @@ export async function selectAllGenre(): Promise<Genre[]> {
   return rows;
 }
 
+export async function selectGamesInGenre(id: string): Promise<Game[]> {
+  const queryText = `
+    SELECT * FROM games 
+    JOIN game_genre gg ON gg.game_id = games.id
+    JOIN genre gr ON gr.id = gg.genre_id
+    WHERE gr.id = $1;`;
+  const { rows } = await pool.query(queryText, [id]);
+  return rows;
+}
+
 export async function getAllGamesFromDB(): Promise<Game[]> {
   const getAllGamesQueryText = `SELECT g.title, g.status, ARRAY_AGG(ge.name) AS genre
     FROM games g

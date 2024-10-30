@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { selectAllGenre } from '../db/queries';
+import { selectAllGenre, selectGamesInGenre } from '../db/queries';
+import createHttpError from 'http-errors';
 
 export async function getAllGenre(_req: Request, res: Response) {
   const genre = await selectAllGenre();
@@ -7,5 +8,10 @@ export async function getAllGenre(_req: Request, res: Response) {
 }
 
 export async function getAllGamesInGenre(req: Request, res: Response) {
-  res.json();
+  const { id } = req.params;
+  if (!id) {
+    throw createHttpError(400, 'Invalid request params');
+  }
+  const games = await selectGamesInGenre(id);
+  res.json(games);
 }

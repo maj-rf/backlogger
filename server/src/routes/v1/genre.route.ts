@@ -3,4 +3,4 @@ import * as genreController from '../../controllers/genre.controller';
 export const genreRouter = Router();
 
 genreRouter.get('/', genreController.getAllGenre);
-genreRouter.get('/:genre', genreController.getAllGamesInGenre);
+genreRouter.get('/:id', genreController.getAllGamesInGenre);
