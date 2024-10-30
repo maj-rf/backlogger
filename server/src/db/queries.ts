@@ -33,7 +33,7 @@ export async function selectGamesInGenre(id: string): Promise<Game[]> {
 }
 
 export async function getAllGamesFromDB(): Promise<Game[]> {
-  const getAllGamesQueryText = `SELECT g.title, g.status, ARRAY_AGG(ge.name) AS genre
+  const getAllGamesQueryText = `SELECT g.id,g.title, g.status, ARRAY_AGG(ge.name) AS genre
     FROM games g
     JOIN game_genre gg ON g.id = gg.game_id
     JOIN genre ge ON gg.genre_id = ge.id
