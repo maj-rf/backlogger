@@ -6,7 +6,7 @@ export function RootLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="w-full bg-red-200">
+      <div className="w-full bg-background">
         <SidebarTrigger />
         <main>
           <Outlet />

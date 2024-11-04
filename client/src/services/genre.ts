@@ -5,12 +5,8 @@ export type Genre = {
   name: string;
 };
 
-export async function getAll(): Promise<Genre[] | undefined> {
-  try {
-    const res = await fetch(`${BASE_URL}/genre`, { mode: 'cors' });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+export async function getAll(): Promise<Genre[]> {
+  const res = await fetch(`${BASE_URL}/genre`, { mode: 'cors' });
+  const data = await res.json();
+  return data;
 }

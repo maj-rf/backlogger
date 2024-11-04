@@ -9,15 +9,17 @@ export function Games() {
     return <span>Error: {error.message}</span>;
   }
   return (
-    <div>
-      <h1>Games</h1>
-      <ul>
-        {data?.map((game) => (
-          <li key={'game' + game.id}>
-            <Link to={`/games/${game.id}`}>
+    <div className="px-2">
+      <h1 className="text-lg font-semibold">Games</h1>
+      <ul className="space-y-2">
+        {data.map((game) => (
+          <li key={'game' + game.id} className="flex gap-2">
+            <Link to={`/games/${game.id}`} className="underline">
               <p>{game.title}</p>
             </Link>
-            <p>{game.status}</p>
+            <div className="bg-green-200 text-green-600 px-2 rounded-sm">
+              <p>{game.status}</p>
+            </div>
           </li>
         ))}
       </ul>

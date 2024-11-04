@@ -7,10 +7,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { NavLink } from 'react-router-dom';
 
+const links = [
+  { path: '/', name: 'Games' },
+  { path: '/genre', name: 'Genre' },
+];
+
 export function AppSidebar() {
+  const { setOpenMobile } = useSidebar();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -19,12 +27,21 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/">Games</NavLink>
-                </SidebarMenuButton>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/genre">Genre</NavLink>
-                </SidebarMenuButton>
+                {links.map((link) => {
+                  return (
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={link.path}
+                        onClick={() => setOpenMobile(false)}
+                        // className={({ isActive }) => {
+                        //   return isActive ? "data-active='true'" : ' ';
+                        // }}
+                      >
+                        {link.name}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  );
+                })}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

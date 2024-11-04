@@ -11,22 +11,14 @@ export type Game = {
 
 export type GameWithoutID = Omit<Game, 'id'>;
 
-export async function getAllGames(): Promise<Game[] | undefined> {
-  try {
-    const res = await fetch(`${BASE_URL}/games`, { mode: 'cors' });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+export async function getAllGames(): Promise<Game[]> {
+  const res = await fetch(`${BASE_URL}/games`, { mode: 'cors' });
+  const data = await res.json();
+  return data;
 }
 
-export async function getGame(id: string): Promise<Game | undefined> {
-  try {
-    const res = await fetch(`${BASE_URL}/games/${id}`, { mode: 'cors' });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+export async function getGame(id: string): Promise<Game> {
+  const res = await fetch(`${BASE_URL}/games/${id}`, { mode: 'cors' });
+  const data = await res.json();
+  return data;
 }

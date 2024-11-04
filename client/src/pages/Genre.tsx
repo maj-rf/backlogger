@@ -6,6 +6,7 @@ export default function Genre() {
   const { data, isPending, isError, error } = useQuery({
     queryFn: genre.getAll,
     queryKey: ['genre'],
+    throwOnError: true,
   });
   if (isPending) return <Loading />;
   if (isError) {
@@ -15,7 +16,7 @@ export default function Genre() {
     <div>
       <h1>Genre</h1>
       <ul>
-        {data?.map((genre) => (
+        {data.map((genre) => (
           <li key={genre.name + genre.id}>{genre.name}</li>
         ))}
       </ul>
