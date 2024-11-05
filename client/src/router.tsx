@@ -1,9 +1,10 @@
-import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, redirect, RouteObject } from 'react-router-dom';
 import { RootLayout } from './components/RootLayout';
 import ErrorPage from './pages/ErrorPage';
 import { Games } from './pages/Games';
-import Genre from './pages/Genre';
+import { Genre } from './pages/Genre';
 import { GameDetail } from './pages/GameDetail';
+import { GenreGames } from './pages/GenreGames';
 
 export const routes: RouteObject[] = [
   {
@@ -18,6 +19,16 @@ export const routes: RouteObject[] = [
       {
         path: '/genre',
         element: <Genre />,
+        children: [
+          {
+            path: '/genre',
+            loader: () => redirect('/genre/1'),
+          },
+          {
+            path: '/genre/:id',
+            element: <GenreGames />,
+          },
+        ],
       },
       {
         path: '/games/:id',
