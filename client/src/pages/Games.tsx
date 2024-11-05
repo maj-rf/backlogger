@@ -10,7 +10,7 @@ export function Games() {
   }
   return (
     <div className="px-2">
-      <h1 className="text-lg font-semibold">Games</h1>
+      <h1 className="text-lg font-semibold mb-2">Games</h1>
       <ul className="space-y-2">
         {data.map((game) => (
           <li key={'game' + game.id} className="flex gap-2">
