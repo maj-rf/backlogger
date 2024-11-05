@@ -24,7 +24,7 @@ export async function selectAllGenre(): Promise<Genre[]> {
 
 export async function selectGamesInGenre(id: string): Promise<Game[]> {
   const queryText = `
-    SELECT * FROM games 
+    SELECT title, status, game_id AS id FROM games 
     JOIN game_genre gg ON gg.game_id = games.id
     JOIN genre gr ON gr.id = gg.genre_id
     WHERE gr.id = $1;`;
