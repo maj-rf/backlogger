@@ -29,13 +29,13 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 {links.map((link) => {
                   return (
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton key={link.name}>
                       <NavLink
                         to={link.path}
                         onClick={() => setOpenMobile(false)}
-                        // className={({ isActive }) => {
-                        //   return isActive ? "data-active='true'" : ' ';
-                        // }}
+                        className={({ isActive }) => {
+                          return isActive ? 'text-green-600 font-semibold' : 'w-full';
+                        }}
                       >
                         {link.name}
                       </NavLink>
