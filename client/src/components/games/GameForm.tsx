@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input';
 import { GameGenreMultiSelect } from './GameGenreMultiSelect';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addGame } from '@/services/games';
-import { DialogClose, DialogFooter } from '../ui/dialog';
 import { Button } from '../ui/button';
 
 const genreSchema = z.string().min(1, 'Genre name is required');
@@ -27,7 +26,11 @@ const formSchema = z.object({
   genre: z.array(genreSchema).nonempty('Genre is required.'),
 });
 
-export function GameForm() {
+export function GameForm({
+  setIsOpen,
+}: {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,14 +46,13 @@ export function GameForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['games'] });
       queryClient.invalidateQueries({ queryKey: ['genre'] });
+      setIsOpen(false);
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
     gameMutation.mutate(values);
+    setIsOpen(false);
   }
 
   return (
@@ -109,20 +111,17 @@ export function GameForm() {
           name="genre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Invite people</FormLabel>
+              <FormLabel>Game Genre</FormLabel>
               <GameGenreMultiSelect onValuesChange={field.onChange} values={field.value} />
               <FormMessage />
             </FormItem>
           )}
         />
-        <DialogFooter className="gap-2">
-          <DialogClose asChild>
-            <Button type="button">Cancel</Button>
-          </DialogClose>
+        <div className="flex flex-col-reverse md:justify-end">
           <Button type="submit" form="game-form" disabled={gameMutation.isPending}>
             Submit
           </Button>
-        </DialogFooter>
+        </div>
       </form>
     </Form>
   );
