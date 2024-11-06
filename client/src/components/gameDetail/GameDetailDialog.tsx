@@ -9,9 +9,9 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { GameForm } from './GameForm';
+import { GameDetailForm } from './GameDetailForm';
 
-export function GameFormDialog() {
+export function GameDetailDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -22,7 +22,7 @@ export function GameFormDialog() {
           <DialogTitle>Edit game details</DialogTitle>
           <DialogDescription>Make changes to your game!</DialogDescription>
         </DialogHeader>
-        <GameForm />
+        <GameDetailForm />
         <DialogFooter className="gap-2">
           <DialogClose asChild>
             <Button type="button">Cancel</Button>

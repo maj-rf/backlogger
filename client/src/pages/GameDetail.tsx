@@ -1,8 +1,7 @@
 import { Loading } from '@/components/Loading';
 import { useGameDetail } from '@/hooks/useGameDetail';
 import { useParams } from 'react-router-dom';
-import { GameFormDialog } from '@/components/GameFormDialog';
-//import { GameForm } from '@/components/GameForm';
+import { GameDetailDialog } from '@/components/gameDetail/GameDetailDialog';
 
 const useRequiredParams = <T extends Record<string, unknown>>() => useParams() as T;
 
@@ -25,7 +24,7 @@ export function GameDetail() {
           </li>
         ))}
       </ul>
-      <GameFormDialog />
+      <GameDetailDialog />
     </div>
   );
 }

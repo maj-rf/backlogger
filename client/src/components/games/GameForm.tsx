@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
+import { GameGenreMultiSelect } from './GameGenreMultiSelect';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addGame } from '@/services/games';
+import { DialogClose, DialogFooter } from '../ui/dialog';
+import { Button } from '../ui/button';
 
 const genreSchema = z.string().min(1, 'Genre name is required');
 
@@ -19,7 +24,7 @@ const formSchema = z.object({
   status: z.enum(['playing', 'backlog', 'finished'], {
     required_error: 'You need to select a game status type.',
   }),
-  genre: z.array(genreSchema),
+  genre: z.array(genreSchema).nonempty('Genre is required.'),
 });
 
 export function GameForm() {
@@ -32,10 +37,20 @@ export function GameForm() {
     },
   });
 
+  const queryClient = useQueryClient();
+  const gameMutation = useMutation({
+    mutationFn: addGame,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['games'] });
+      queryClient.invalidateQueries({ queryKey: ['genre'] });
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    gameMutation.mutate(values);
   }
 
   return (
@@ -89,6 +104,25 @@ export function GameForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="genre"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Invite people</FormLabel>
+              <GameGenreMultiSelect onValuesChange={field.onChange} values={field.value} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <DialogFooter className="gap-2">
+          <DialogClose asChild>
+            <Button type="button">Cancel</Button>
+          </DialogClose>
+          <Button type="submit" form="game-form" disabled={gameMutation.isPending}>
+            Submit
+          </Button>
+        </DialogFooter>
       </form>
     </Form>
   );
