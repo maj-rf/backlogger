@@ -29,7 +29,7 @@ export function GenreGames() {
 
   return (
     <div className="mt-8">
-      <h1>Games</h1>
+      <h1>{data[0].genre[0]} Games</h1>
       <ul>
         {data.map((game) => (
           <li key={game.id + game.title}>
