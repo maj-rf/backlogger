@@ -50,12 +50,12 @@ export async function deleteGame(req: Request, res: Response) {
 
 export async function updateGame(req: Request, res: Response) {
   const { id } = req.params;
-  const { game_status } = req.body;
+  const { game_status, title } = req.body;
   const allowedStatuses = ['playing', 'backlog', 'finished'];
   if (!id || !allowedStatuses.includes(game_status)) {
     throw createHttpError(400, 'Invalid request params or body');
   }
-  const result = await updateGameFromDB({ id, status: game_status });
+  const result = await updateGameFromDB({ id, status: game_status, title });
   if (result instanceof DatabaseError) {
     throw result;
   }

@@ -99,13 +99,21 @@ export async function insertGameToDB(game: GameWithoutID) {
 }
 
 export async function deleteGameFromDB(id: string) {
+  const client = await pool.connect();
   try {
-    const selectedGameText = `DELETE FROM games WHERE id=$1 RETURNING *`;
-    const result: QueryResult<Game> = await pool.query(selectedGameText, [id]);
-    if (result.rows.length === 0) {
+    await client.query('BEGIN');
+
+    const selectGameQuery = `SELECT * FROM games WHERE id = $1`;
+    const queryResult = await client.query(selectGameQuery, [id]);
+    if (queryResult.rows.length === 0) {
       throw new DatabaseError('Game not found', 1, 'noData');
     }
-    return result.rows[0];
+
+    const deleteGameText = `DELETE FROM games WHERE id=$1 RETURNING *`;
+    await client.query(deleteGameText, [id]);
+
+    await client.query('COMMIT');
+    return queryResult.rows[0];
   } catch (err) {
     if (err instanceof DatabaseError) {
       return err;
@@ -113,18 +121,27 @@ export async function deleteGameFromDB(id: string) {
   }
 }
 
-export async function updateGameFromDB({ id, status }: { id: string; status: GameStatus }) {
+export async function updateGameFromDB({
+  title,
+  id,
+  status,
+}: {
+  title: string;
+  id: string;
+  status: GameStatus;
+}) {
   try {
     const selectedGameText = `
     UPDATE games
-    SET status=$1 
-    WHERE id=$2 
+    SET title=$1, status=$2
+    WHERE id=$3 
     RETURNING *`;
 
-    const result: QueryResult<Game> = await pool.query(selectedGameText, [status, id]);
+    const result: QueryResult<Game> = await pool.query(selectedGameText, [title, status, id]);
     if (result.rows.length === 0) {
       throw new DatabaseError('Game not found', 1, 'noData');
     }
+    return result.rows[0];
   } catch (error) {
     if (error instanceof DatabaseError) {
       return error;
