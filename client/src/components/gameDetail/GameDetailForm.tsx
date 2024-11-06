@@ -11,24 +11,39 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
-
-const genreSchema = z.string().min(1, 'Genre name is required');
+import { editGame, Game } from '@/services/games';
+import { Button } from '../ui/button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const formSchema = z.object({
-  title: z.string().min(3).max(50),
+  title: z.string().min(3, 'Title is required').max(50),
   status: z.enum(['playing', 'backlog', 'finished'], {
     required_error: 'You need to select a game status type.',
   }),
-  genre: z.array(genreSchema),
 });
 
-export function GameDetailForm() {
+export function GameDetailForm({
+  data,
+  setIsOpen,
+}: {
+  data: Game;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      status: 'backlog',
-      genre: ['RPG'],
+      title: data.title,
+      status: data.status,
+    },
+  });
+
+  const queryClient = useQueryClient();
+  const gameDetailMutation = useMutation({
+    mutationFn: editGame,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['games', 'detail', data.id] });
+      queryClient.invalidateQueries({ queryKey: ['games'] });
+      setIsOpen(false);
     },
   });
 
@@ -36,6 +51,7 @@ export function GameDetailForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    gameDetailMutation.mutate({ ...values, id: data.id });
   }
 
   return (
@@ -46,7 +62,7 @@ export function GameDetailForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Game Title</FormLabel>
+              <FormLabel htmlFor="title">Game Title</FormLabel>
               <FormControl>
                 <Input placeholder="Pokemon Red" {...field} />
               </FormControl>
@@ -54,12 +70,13 @@ export function GameDetailForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel>Game is currently...</FormLabel>
+              <FormLabel htmlFor="status">Game is currently...</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
@@ -89,6 +106,11 @@ export function GameDetailForm() {
             </FormItem>
           )}
         />
+        <div className="flex flex-col-reverse md:justify-end px-4 md:px-0">
+          <Button type="submit" form="game-form" disabled={false}>
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );

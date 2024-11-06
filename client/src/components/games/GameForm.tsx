@@ -117,7 +117,7 @@ export function GameForm({
             </FormItem>
           )}
         />
-        <div className="flex flex-col-reverse md:justify-end">
+        <div className="flex flex-col-reverse md:justify-end px-4 md:px-0">
           <Button type="submit" form="game-form" disabled={gameMutation.isPending}>
             Submit
           </Button>

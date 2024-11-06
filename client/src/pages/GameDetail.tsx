@@ -1,21 +1,43 @@
 import { Loading } from '@/components/Loading';
 import { useGameDetail } from '@/hooks/useGameDetail';
-import { useParams } from 'react-router-dom';
-import { GameDetailDialog } from '@/components/gameDetail/GameDetailDialog';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import { ResponsiveDialog } from '@/components/ResponsiveDialog';
+import { GameDetailForm } from '@/components/gameDetail/GameDetailForm';
+import { useState } from 'react';
+import { deleteGame } from '@/services/games';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
 const useRequiredParams = <T extends Record<string, unknown>>() => useParams() as T;
 
 export function GameDetail() {
   const { id } = useRequiredParams<{ id: string }>();
   const { data, isPending, isError, error } = useGameDetail(id);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation({
+    mutationFn: deleteGame,
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['games'] }),
+        queryClient.invalidateQueries({ queryKey: ['genre'] }),
+      ]);
+      navigate('/');
+    },
+  });
+
+  const handleDelete = (id: number) => {
+    deleteMutation.mutate(id);
+  };
+
   if (isPending) return <Loading />;
   if (isError) {
     return <span>Error: {error.message}</span>;
   }
   return (
     <div className="px-2">
-      <h1>Title: {data?.title}</h1>
-      <p>Game Status: {data?.status}</p>
+      <h1>Title: {data.title}</h1>
+      <p>Game Status: {data.status}</p>
       <ul className="flex gap-2 mb-2">
         <p>Genre:</p>
         {data?.genre.map((genre) => (
@@ -24,7 +46,24 @@ export function GameDetail() {
           </li>
         ))}
       </ul>
-      <GameDetailDialog />
+      <Button
+        type="button"
+        variant="destructive"
+        className="mr-3"
+        disabled={deleteMutation.isPending}
+        onClick={() => handleDelete(data.id)}
+      >
+        {deleteMutation.isPending ? <Loading /> : 'Delete'}
+      </Button>
+      <ResponsiveDialog
+        isOpen={isEditOpen}
+        setIsOpen={setIsEditOpen}
+        title={`Edit ${data.title}`}
+        description="Edit game"
+        buttonLabel="Edit"
+      >
+        <GameDetailForm data={data} setIsOpen={setIsEditOpen} />
+      </ResponsiveDialog>
     </div>
   );
 }

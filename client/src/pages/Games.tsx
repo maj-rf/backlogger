@@ -21,6 +21,7 @@ export function Games() {
         setIsOpen={setIsAddOpen}
         title="Add Game"
         description="Add Games"
+        buttonLabel="Add"
       >
         <GameForm setIsOpen={setIsAddOpen} />
       </ResponsiveDialog>

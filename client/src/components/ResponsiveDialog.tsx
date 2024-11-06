@@ -27,12 +27,14 @@ export function ResponsiveDialog({
   setIsOpen,
   title,
   description,
+  buttonLabel,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   description?: string;
+  buttonLabel?: string;
 }) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
 
@@ -40,7 +42,7 @@ export function ResponsiveDialog({
     return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Add</Button>
+          <Button variant="outline">{buttonLabel}</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -63,7 +65,7 @@ export function ResponsiveDialog({
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline">Add</Button>
+        <Button variant="outline">{buttonLabel}</Button>
       </DrawerTrigger>
       <DrawerContent className="px-2">
         <DrawerHeader>
@@ -71,7 +73,7 @@ export function ResponsiveDialog({
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
         {children}
-        <DrawerFooter className="pt-2">
+        <DrawerFooter className="p-4">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
