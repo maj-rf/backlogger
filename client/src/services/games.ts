@@ -37,3 +37,31 @@ export async function addGame(obj: GameWithoutID): Promise<Game[]> {
   const data = await res.json();
   return data;
 }
+
+export async function editGame(obj: {
+  title: string;
+  status: 'playing' | 'backlog' | 'finished';
+  id: number;
+}): Promise<Game[]> {
+  const res = await fetch(`${BASE_URL}/games/${obj.id}`, {
+    mode: 'cors',
+    method: 'PATCH',
+    body: JSON.stringify({
+      title: obj.title,
+      game_status: obj.status,
+    }),
+    headers: { 'Content-type': 'application/json' },
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function deleteGame(id: number) {
+  const res = await fetch(`${BASE_URL}/games/${id}`, {
+    mode: 'cors',
+    method: 'DELETE',
+    headers: { 'Content-type': 'application/json' },
+  });
+  const data = await res.json();
+  return data;
+}
