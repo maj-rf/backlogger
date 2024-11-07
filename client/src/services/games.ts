@@ -1,6 +1,6 @@
 import { BASE_URL } from './genre';
 
-type GameStatus = 'playing' | 'backlog' | 'finished';
+export type GameStatus = 'playing' | 'backlog' | 'finished';
 
 export type Game = {
   id: number;

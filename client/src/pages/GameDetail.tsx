@@ -1,13 +1,14 @@
 import { Loading } from '@/components/Loading';
 import { useGameDetail } from '@/hooks/useGameDetail';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ResponsiveDialog } from '@/components/ResponsiveDialog';
 import { GameDetailForm } from '@/components/gameDetail/GameDetailForm';
 import { useState } from 'react';
 import { deleteGame } from '@/services/games';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-const useRequiredParams = <T extends Record<string, unknown>>() => useParams() as T;
+import { GameStatusType } from '@/components/GameStatusType';
+import { useRequiredParams } from '@/lib/utils';
 
 export function GameDetail() {
   const { id } = useRequiredParams<{ id: string }>();
@@ -35,9 +36,14 @@ export function GameDetail() {
     return <span>Error: {error.message}</span>;
   }
   return (
-    <div className="px-2">
+    <div className="px-2 space-y-2">
       <h1>Title: {data.title}</h1>
-      <p>Game Status: {data.status}</p>
+      <div>
+        <span>Game Status: </span>
+        <div className="inline-block">
+          <GameStatusType status={data.status} />
+        </div>
+      </div>
       <ul className="flex gap-2 mb-2">
         <p>Genre:</p>
         {data?.genre.map((genre) => (

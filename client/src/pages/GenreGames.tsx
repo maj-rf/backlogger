@@ -1,10 +1,11 @@
 import { skipToken, useQuery } from '@tanstack/react-query';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as genre from '../services/genre';
 import { Loading } from '@/components/Loading';
+import { useRequiredParams } from '@/lib/utils';
 
 export function GenreGames() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useRequiredParams<{ id: string }>();
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['genre', id],
     queryFn: id ? () => genre.getGamesInGenre(id) : skipToken,
